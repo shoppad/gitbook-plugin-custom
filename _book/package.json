@@ -1,0 +1,13 @@
+{
+  "name": "gitbook-plugin-custom-formatting",
+  "version": "1.0.0",
+  "description": "Custom formatting rules plugin for GitBook documentation",
+  "main": "index.js",
+  "engines": {
+    "gitbook": ">1.x.x"
+  },
+  "license": "MIT",
+  "gitbook": {
+    "properties": {}
+  }
+}
