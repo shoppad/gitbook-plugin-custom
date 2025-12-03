@@ -1,4 +1,4 @@
-# GitBook Custom Formatting Plugin
+# GitBook Custom Plugin
 
 A custom GitBook plugin to modify formatting rules for your documentation.
 
@@ -6,12 +6,12 @@ A custom GitBook plugin to modify formatting rules for your documentation.
 
 ### Local Installation
 
-1. The plugin is located in the `gitbook-plugin-custom-formatting` directory
+1. The plugin is located in the `gitbook-plugin-custom` directory
 2. Add it to your `book.json` using a relative path:
 
 ```json
 {
-  "plugins": ["hints", "url-embed", "./gitbook-plugin-custom-formatting"]
+  "plugins": ["hints", "url-embed", "./gitbook-plugin-custom"]
 }
 ```
 
@@ -23,13 +23,49 @@ npm install
 
 **Note:** For local plugins, you must use a relative path (starting with `./`) in the plugins array. GitBook will not find local plugins if you just use the plugin name.
 
+### Development: Linking to docs-internal Repository
+
+For development and testing, you can link this plugin to the `docs-internal` repository using `npm link`:
+
+1. **Create a global symlink** in this plugin directory:
+
+```bash
+cd ~/Projects/gitbook-plugin-custom
+npm link
+```
+
+2. **Link the plugin** in the docs-internal repository:
+
+```bash
+cd ~/Projects/docs-internal
+npm link gitbook-plugin-custom
+```
+
+4. **Install GitBook and npm dependencies** (if not already done):
+
+```bash
+gitbook install
+npm install gitbook-plugin-custom
+```
+
+**To unlink later:**
+
+```bash
+cd ~/Projects/docs-internal
+npm unlink gitbook-plugin-custom
+
+# Optional: remove the global symlink if you no longer need it
+cd ~/Projects/gitbook-plugin-custom
+npm unlink
+```
+
 ### Configuration
 
 No configuration is needed. Simply add the plugin to your `book.json`:
 
 ```json
 {
-  "plugins": ["hints", "url-embed", "./gitbook-plugin-custom-formatting"]
+  "plugins": ["hints", "url-embed", "./gitbook-plugin-custom"]
 }
 ```
 
@@ -245,5 +281,5 @@ npm publish
 Then others can install it with:
 
 ```bash
-npm install gitbook-plugin-custom-formatting
+npm install gitbook-plugin-custom
 ```
