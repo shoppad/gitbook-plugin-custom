@@ -1,0 +1,128 @@
+/**
+ * GitBook Custom Search Styles
+ */
+
+/* Search wrapper */
+#custom-search-wrapper {
+  padding: 10px 15px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+#custom-search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#custom-search-input:focus {
+  border-color: #4a9eff;
+  box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.15);
+}
+
+#custom-search-input::placeholder {
+  color: #aaa;
+}
+
+/* Results container */
+#custom-search-results {
+  border-radius: 0 0 4px 4px;
+  margin-top: 4px;
+}
+
+#custom-search-results:empty {
+  display: none !important;
+}
+
+/* Result items */
+.search-result-item {
+  transition: background-color 0.15s;
+}
+
+.search-result-item:hover {
+  background-color: #f5f7fa !important;
+}
+
+.search-result-item:last-child {
+  border-bottom: none !important;
+  border-radius: 0 0 4px 4px;
+}
+
+.search-result-title {
+  line-height: 1.4;
+}
+
+.search-result-title mark {
+  background: #fff3cd;
+  padding: 1px 3px;
+  border-radius: 2px;
+}
+
+.search-result-path {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Dark theme support */
+.book.color-theme-2 #custom-search-results,
+.night #custom-search-results {
+  background: #1c1f2b;
+  border-color: #373b4d;
+}
+
+.book.color-theme-2 .search-result-item,
+.night .search-result-item {
+  color: #bdcadb !important;
+  border-color: #373b4d !important;
+}
+
+.book.color-theme-2 .search-result-item:hover,
+.night .search-result-item:hover {
+  background-color: #252836 !important;
+}
+
+.book.color-theme-2 .search-result-path,
+.night .search-result-path {
+  color: #6b7a8f !important;
+}
+
+.book.color-theme-2 #custom-search-input,
+.night #custom-search-input {
+  background: #252836;
+  border-color: #373b4d;
+  color: #bdcadb;
+}
+
+.book.color-theme-2 #custom-search-input:focus,
+.night #custom-search-input:focus {
+  border-color: #4a9eff;
+}
+
+/* Sepia theme support */
+.book.color-theme-1 #custom-search-results {
+  background: #f3eacb;
+  border-color: #d4ceb3;
+}
+
+.book.color-theme-1 .search-result-item {
+  color: #5f4b32 !important;
+  border-color: #d4ceb3 !important;
+}
+
+.book.color-theme-1 .search-result-item:hover {
+  background-color: #ebe4c8 !important;
+}
+
+.book.color-theme-1 .search-result-path {
+  color: #8c7a5e !important;
+}
+
+.book.color-theme-1 #custom-search-input {
+  background: #f3eacb;
+  border-color: #d4ceb3;
+  color: #5f4b32;
+}

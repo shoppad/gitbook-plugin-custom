@@ -1,10 +1,23 @@
-module.exports = {
-  // Map of hooks
-  hooks: {
-    // Hook to modify page content before rendering
-    'page:before': function (page) {
-      console.log('Custom formatting plugin running on page:', page.path);
+const fs = require('fs');
+const path = require('path');
 
+// Simple front-matter remover
+function stripFrontMatter(text) {
+  if (!text) return '';
+  return text.replace(/^---[\s\S]*?---/, '').trim();
+}
+
+let gitBookPages = [];
+
+module.exports = {
+  hooks: {
+    // Reset pages array at the start of each build to prevent stale data
+    init: function () {
+      gitBookPages = [];
+    },
+
+    // Capture pages after markdown processing
+    'page:before': function (page) {
       try {
         // Single regex to handle all {% embed ... %} variations
         page.content = page.content.replace(
@@ -235,43 +248,78 @@ module.exports = {
             return table;
           }
         );
+        const cleaned = stripFrontMatter(page.content || '');
+        const pagePath = page.path
+          ? page.path
+          : 'unknown_' + gitBookPages.length;
 
-        console.log('Page content after custom formatting:', page.content);
+        gitBookPages.push({
+          path: pagePath,
+          title: page.title || '',
+          content: cleaned,
+        });
 
         return page;
-      } catch (error) {
-        console.error('Error custom formatting page:', error);
+      } catch (err) {
+        console.error('Error processing page:', page.path, err);
         return page;
       }
     },
 
-    // Hook to modify the HTML output
-    finish: function () {
-      // This hook runs after all pages are generated
-      // You can modify the final HTML output here
+    // Build the search index after all pages are processed
+    finish: function (/* page, context */) {
+      // Write to the output _book folder, not the source folder
+      // this.output.root() gives us the _book directory path
+      const outputRoot = this.output.root();
+      const assetsDir = path.join(outputRoot, 'assets');
+
+      if (!fs.existsSync(assetsDir)) {
+        fs.mkdirSync(assetsDir, { recursive: true });
+      }
+
+      console.log('[custom-search] Building search index...');
+      console.log('[custom-search] Output directory:', outputRoot);
+      console.log('[custom-search] Assets directory:', assetsDir);
+      console.log('[custom-search] Total pages:', gitBookPages.length);
+
+      // Export pages as a single JSON file for client-side indexing
+      // This is more reliable than serializing FlexSearch's internal format
+      const searchData = gitBookPages.map((p) => ({
+        path: p.path,
+        title: p.title || '',
+        // Truncate content to reduce file size (first 5000 chars is enough for search)
+        content: (p.content || '').substring(0, 5000),
+      }));
+
+      const outputFile = path.join(assetsDir, 'search_pages.json');
+      fs.writeFileSync(outputFile, JSON.stringify(searchData));
+      console.log(
+        '[custom-search] Wrote search_pages.json with',
+        searchData.length,
+        'pages'
+      );
+
+      console.log('[custom-search] Done.');
     },
   },
 
-  // Map of new blocks (custom markdown blocks)
+  book: {
+    assets: './assets',
+    js: ['search.js'],
+    css: ['search.css'],
+  },
+
   blocks: {
-    // Example: Custom block for formatted code
     'formatted-code': {
       process: function (block) {
-        // Process custom block content
-        return '<div class="custom-formatted-code">' + block.body + '</div>';
+        return `<div class="custom-formatted-code">${block.body}</div>`;
       },
     },
   },
 
-  // Map of new filters (template filters)
   filters: {
-    // Example: Custom filter to format text
     'format-text': function (text, options) {
-      // Apply custom formatting to text
-      if (options && options.uppercase) {
-        return text.toUpperCase();
-      }
-      return text;
+      return options && options.uppercase ? text.toUpperCase() : text;
     },
   },
 };
